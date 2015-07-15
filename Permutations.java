@@ -3,16 +3,18 @@ import java.util.Arrays;
 import java.util.List; 
 
 // create a package once I'm finished and have it as a Github repository. 
+// maybe add a combinations faculty to this??
 
 public class Permutations {
-	public String word;
-	public List<String> permutations;
+	private final String word;
+	private final List<String> permutations;
+	private final long numberOfPermutations; 
 
 	public Permutations(String originalWord) {
 		word = originalWord;
-		this.permutations = permute(originalWord); 
+		permutations = this.permute(); 
+		numberOfPermutations = permutations.size();
 	}
-
 
 	public static void main(String[] args) {
 		String word = args[0];
@@ -20,24 +22,24 @@ public class Permutations {
 		System.out.println(permutations);
 	}
 
+	public String getWord() { return word; }
+	public List<String> getPermutations() { return permutations; }
+	public long numberOfPermutations() { return numberOfPermutations; }
+
 
 	@Override
 	public String toString() {
-		String permString = "";
-		for (String p : this.permutations) {
-			permString += p + ", ";
-		}
-		return permString;
+		return "Word: " + word + "\nTotal number: " + numberOfPermutations + "\n" + permutations;
 	}
 	
 
 	
-	public static List<String> permute(String word) {
-		return combine(addLetter(new ArrayList<String>(), word), word); 
+	private List<String> permute() {
+		return combine(addLetter(new ArrayList<String>())); 
 	}
 
-	public static List<String> combine(List<String> longList, String word) {
-		int length = word.length();
+	private List<String> combine(List<String> longList) {
+		int length = this.word.length();
 		int lengthList = longList.size();
 		List<String> permutations = new ArrayList<>();
 
@@ -54,9 +56,9 @@ public class Permutations {
 	}  
 
 
-	public static List<String> addLetter(List<String> phrase, String word) {
+	private List<String> addLetter(List<String> phrase) {
 		// this function just should return the completed set of permutations for 
-		List<String> otherLetters = listOtherLetters(phrase, word);
+		List<String> otherLetters = listOtherLetters(phrase);
 		
 		if (otherLetters.size() == 0) {
 			return phrase;
@@ -65,31 +67,31 @@ public class Permutations {
 			for (String c : otherLetters) {
 				List<String> tmp = new ArrayList<>(phrase);
 				tmp.add(c);
-				permutations.addAll(addLetter(tmp, word)); 
+				permutations.addAll(addLetter(tmp)); 
 			}
 			return permutations; 
 		} 		
 	}
 	
 
-	public static List<String> listOtherLetters(List<String> phrase, String word) {
-			int wordLength = word.length();
+	private List<String> listOtherLetters(List<String> phrase) {
+			int wordLength = this.word.length();
 			// the return value (a list)
 			List<String> otherLetters = new ArrayList<>();
 			// the letters we want to EXCLUDE from otherLetters
 			List<Integer> lettersInPhrase = new ArrayList<>();
 			
 			if (phrase.size() == 0) {
-				otherLetters.addAll(Arrays.asList(word.split("")));
+				otherLetters.addAll(Arrays.asList(this.word.split("")));
 				return otherLetters;
 			}
 
 			// add ALL matching indices for later comparison, including duplicates
 			for (String letter : phrase) {
-				int index = word.indexOf(letter);
+				int index = this.word.indexOf(letter);
 				// loop through the different instances of the same letter until we find unused one
 				while (lettersInPhrase.contains(index)) { 
-					index = word.indexOf(letter, index + 1);
+					index = this.word.indexOf(letter, index + 1);
 				}
 				lettersInPhrase.add(index);
 			}
@@ -97,7 +99,7 @@ public class Permutations {
 			for (int i = 0; i < wordLength; i++) {
 				// check if letter index isn't in lettersInPhrase. If not, add to return ArrayList
 				if (!lettersInPhrase.contains(i)) {
-					otherLetters.add(Character.toString(word.charAt(i))); 
+					otherLetters.add(Character.toString(this.word.charAt(i))); 
 				}
 			}
 
@@ -108,22 +110,6 @@ public class Permutations {
 
 }
 
-// maybe add a combinations faculty to this??
-// class Permutation {
-// 	public String word;
-// 	public List<String> permutations; 
-// 	public Permutation(List<String> originalWord) {
-// 		word = originalWord;
-// 		permutations = originalWord.permute(); 
-// 	}
-
-// 	private List<String> permute(String word) {
-// 		return combine(addLetter(new ArrayList<String>(), word), word); 
-// 	}
-
-
-
-// }
 
 
 
