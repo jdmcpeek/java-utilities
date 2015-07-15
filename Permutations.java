@@ -20,6 +20,9 @@ public class Permutations {
 		String word = args[0];
 		Permutations permutations = new Permutations(word);
 		System.out.println(permutations);
+		Permutations.Combinations combinations = permutations.new Combinations(2);
+		System.out.println(combinations.numberOfCombinations);
+
 	}
 
 	public String getWord() { return word; }
@@ -107,8 +110,53 @@ public class Permutations {
 
 	} 
 
+	class Combinations {
+		private int chooseNum;
+		private long numberOfCombinations;
+
+		/**
+		 * Default constructor: chooseNum is simply the word length
+		 * @return numberOfCombinations = 1;
+		 */
+		public Combinations() {
+			this(Permutations.this.word.length());
+		}
+
+		public Combinations(int chooseNum) {
+			assert chooseNum > 0 && chooseNum < Permutations.this.word.length() : "You cannot take a combination of n symbols when n is above the word length or below 1"; 
+			this.chooseNum = chooseNum; 
+			numberOfCombinations = this.chooseNCombine();
+		}
+
+		private long chooseNCombine() {
+			// numerator factorial
+			long numPermutations = 1;
+	
+			// implement classic permutations with `i` number of slots left over
+			for (int i = Permutations.this.word.length(); i > chooseNum; i--) {
+				numPermutations *= i; 
+			}
+			long numPossibleArrangements = 1;
+			for (int i = chooseNum; i > 0; i--) {
+				numPossibleArrangements *= i;
+			}
+
+			return numPermutations / numPossibleArrangements;
+
+		}
+
+		public void setChooseNum(int newNum) {
+			chooseNum = newNum;
+			numberOfCombinations = this.chooseNCombine();
+		}
+
+		public int getChooseNum() { return chooseNum; }
+		public long getNumberOfCombinations() { return numberOfCombinations; }
+
+	}
 
 }
+
 
 
 
