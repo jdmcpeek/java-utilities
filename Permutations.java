@@ -1,9 +1,16 @@
+/**
+ * Author: J. David McPeek
+ *
+ * Contact: david.mcpeek@yale.edu
+ *
+ * A useful tool to list all possible permutations of a given string (CL arg 1).
+ * Also includes a combinations calculator.
+ * 
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List; 
-
-// create a package once I'm finished and have it as a Github repository. 
-// maybe add a combinations faculty to this??
 
 public class Permutations {
 	private final String word;
@@ -18,10 +25,12 @@ public class Permutations {
 
 	public static void main(String[] args) {
 		String word = args[0];
+		int chooseNum = args.length > 1 ? Integer.parseInt(args[1]) : 1; 
 		Permutations permutations = new Permutations(word);
 		System.out.println(permutations);
-		Permutations.Combinations combinations = permutations.new Combinations(2);
-		System.out.println(combinations.numberOfCombinations);
+		if (args.length > 1) {
+			System.out.println(word.length() + " choose " + chooseNum + " = " + permutations.numberOfCombinations(chooseNum));
+		}
 
 	}
 
@@ -108,61 +117,50 @@ public class Permutations {
 
 			return otherLetters;
 
-	} 
+	}
 
-	class Combinations {
-		private int chooseNum;
-		private long numberOfCombinations;
 
-		/**
-		 * Default constructor: chooseNum is simply the word length
-		 * @return numberOfCombinations = 1;
-		 */
-		public Combinations() {
-			this(Permutations.this.word.length());
-		}
+	public long numberOfCombinations(int k) {
+		return numberOfCombinations(word.length(), k);
+	}
 
-		public Combinations(int chooseNum) {
-			assert chooseNum > 0 && chooseNum < Permutations.this.word.length() : "You cannot take a combination of n symbols when n is above the word length or below 1"; 
-			this.chooseNum = chooseNum; 
-			numberOfCombinations = this.chooseNCombine();
-		}
+	/**
+	 * Generic method for finding the possible number of combinations given the length of the string and the size of the groups.
+	 * @param  stringLength length of the string
+	 * @param  chooseNum    size of the groups
+	 * @return              the total number of possible combinations
+	 */
+	public static long numberOfCombinations(int stringLength, int k) {
+		assert k > 0 && k < stringLength : "You cannot find the combinations of k symbols when k is above the given string length or below 1"; 
 
-		private long chooseNCombine() {
-			// numerator factorial
-			long numPermutations = 1;
-	
-			// implement classic permutations with `i` number of slots left over
-			for (int i = Permutations.this.word.length(); i > chooseNum; i--) {
-				numPermutations *= i; 
+		try {
+			if (k < 1 || k > stringLength) {
+				throw new IllegalArgumentException();
 			}
-			long numPossibleArrangements = 1;
-			for (int i = chooseNum; i > 0; i--) {
-				numPossibleArrangements *= i;
-			}
-
-			return numPermutations / numPossibleArrangements;
-
+		} catch (IllegalArgumentException e) {
+			System.out.println("Illegal argument exception: " + e.getMessage());
+			System.out.println("Your choose-k value (arg[1]) must be greater than 0 or less than the number of symbols in the given string");
+			System.out.println("Converting k to 1...");
+			k = 1;
 		}
 
-		public void setChooseNum(int newNum) {
-			chooseNum = newNum;
-			numberOfCombinations = this.chooseNCombine();
+		// numerator factorial
+		long numPermutations = 1;
+
+		// implement classic permutations with `i` number of slots left over
+		for (int i = stringLength; i > stringLength - k; i--) {
+			numPermutations *= i; 
+		}
+		long kPrime = 1;
+		for (int i = k; i > 0; i--) {
+			kPrime *= i;
 		}
 
-		public int getChooseNum() { return chooseNum; }
-		public long getNumberOfCombinations() { return numberOfCombinations; }
+		return numPermutations / kPrime;
 
 	}
 
 }
-
-
-
-
-
-
-
 
 
 
